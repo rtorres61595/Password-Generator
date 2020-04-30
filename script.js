@@ -1,61 +1,88 @@
-// main area to pull the id's from the html 
-var characterAmountRange = document.getElementById("characterAmountRange")
-var characterAmountNumber = document.getElementById("characterAmountNumber")
-var includeUppercaseElement = document.getElementById("includeUppercase")
-var includeNumbersElement = document.getElementById("includeNumbers")
-var includeSymbolsElement = document.getElementById("includeSymbols")
-var form = document.getElementById("passwordGeneratorForm")
-var passwordDisplay = document.getElementById("passwordDisplay")
-// the area that the password characters are coming from using charcodes
-var upperCasePassword = arrayFromLowToHigh(65, 90)
-var lowerCasePassword = arrayFromLowToHigh(97, 122)
-var numberPassword = arrayFromLowToHigh(48, 57)
-var symbolPassword = arrayFromLowToHigh(33, 47).concat( arrayFromLowToHigh(58, 64)).concat(arrayFromLowToHigh(91, 96)).concat( arrayFromLowToHigh(123, 126)
-)
-//syncing the scroll bar and box 
-characterAmountNumber.addEventListener("input", syncCharacterAmount)
-characterAmountRange.addEventListener("input", syncCharacterAmount)
+// Assignment Code
+var generateBtn = document.querySelector("#generate");
 
-//the var's for the characters for the password 
+var numArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+var lowerArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+var upperCaseArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+var symbolArray = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
+function getOptions() {
+  var length = parseInt(prompt("How long of a password"));
+  console.log(length);
+  if(length < 8) {
+    alert("password is too short");
+    return;
+  }
+  if(length > 128) {
+    alert("password to long");
+    return;
+  }
+  if(isNaN(length) === true) {
+    alert("password must be numbers");
+    return;
+  }
 
-form.addEventListener("submit", e => {
-  e.preventDefault()
-  var characterAmount = characterAmountNumber.value
-  var includeUppercase = includeUppercaseElement.checked
-  var includeNumbers = includeNumbersElement.checked
-  var includeSymbols = includeSymbolsElement.checked
-  var password = generatePassword(characterAmount, includeUppercase, includeNumbers, includeSymbols)
-  passwordDisplay.innerText = password
-})
-// running the code to pull the characters for the password 
-function generatePassword(characterAmount, includeUppercase, includeNumbers, includeSymbols) {
-  console.log(upperCasePassword)
-  console.log(lowerCasePassword)
-  console.log(numberPassword)
-  console.log(symbolPassword)
-    let charCodes = lowerCasePassword
-  if (includeUppercase) charCodes = charCodes.concat(upperCasePassword)
-  if (includeSymbols) charCodes = charCodes.concat(symbolPassword)
-  if (includeNumbers) charCodes = charCodes.concat(numberPassword)
+  var hasNum = confirm("click ok for nums");
+  var hasLower = confirm("click for lowerCase");
+  var hasUpper = confirm("click for UpperCase");
+  var hasSymbol = confirm("click for Symbols");
+  if(hasNum === false && hasLower === false && hasUpper === false && hasSymbol === false) {
+    alert("please choose at least one type");
+    return;
+  }
+
+  var passwordOptions = {
+    length,
+    hasNum,
+    hasLower,
+    hasUpper,
+    hasSymbol
+  }
+  return passwordOptions;
   
-  var passwordCharacters = []
-  for (let i = 0; i < characterAmount; i++) {
-    var characterCode = charCodes[Math.floor(Math.random() * charCodes.length)]
-    passwordCharacters.push(String.fromCharCode(characterCode))
-  }
-  return passwordCharacters.join("")
+};
+
+function getRandom(arr) {
+  var index = Math.floor(Math.random() * arr.length);
+  var passwordDigit = arr[index];
+  return passwordDigit;
 }
 
-function arrayFromLowToHigh(low, high) {
-  var array = []
-  for (let i = low; i <= high; i++) {
-    array.push(i)
+
+function generatePassword() {
+  var options = getOptions();
+  
+  var superArray = [];
+  var result = [];
+
+  if(options.hasNum) {
+    superArray = superArray.concat(numArray);
   }
-  return array
+  if(options.hasLower) {
+    superArray = superArray.concat(lowerArray);
+  }
+  if(options.hasUpper) {
+    superArray = superArray.concat(upperCaseArray);
+  }
+  if(options.hasSymbol) {
+    superArray = superArray.concat(symbolArray);
+  }
+
+
+  for(var i = 0; i < options.length; i++) {
+    var digit = getRandom(superArray);
+    result.push(digit);
+  }
+  return result.join("");
 }
 
-function syncCharacterAmount(e) {
-  var value = e.target.value
-  characterAmountNumber.value = value
-  characterAmountRange.value = value
+
+function writePassword() {
+  var password = generatePassword();
+  var passwordText = document.querySelector("#password");
+
+  passwordText.value = password;
+
 }
+
+// Add event listener to generate button
+generateBtn.addEventListener("click", writePassword);

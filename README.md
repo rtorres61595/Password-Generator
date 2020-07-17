@@ -1,1 +1,1 @@
-# homeWorkWeek3
+# A simple password generator using java script 
